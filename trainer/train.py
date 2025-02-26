@@ -213,7 +213,11 @@ def save_checkpoint(engine, tokenizer, step, losses, args):
         engine.save_checkpoint(ckpt_path, tag=save_ckpt_step)
 
     # 保存pytorch格式模型
-    engine.save_16bit_model(save_path)
+    engine.module.save_pretrained(save_path,
+                                  torch_dtype=torch.bfloat16,   # 显式声明保存类型
+    safe_serialization=True)  # 保存为safetensors模型
+     
+    # engine.save_16bit_model(save_path)
 
     # 保存config
     with open(os.path.join(save_path, 'config.json'), 'w') as f:  # 保存config
